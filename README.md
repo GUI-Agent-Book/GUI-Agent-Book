@@ -1,283 +1,211 @@
-<!-- markdownlint-disable MD033 MD041 -->
+<!-- 本 README 已根据书籍《大模型GUI智能体——人机交互新时代》示例需求重新整理，全部内容为中文版本。 -->
 <h1 align="center">
-  <b>UFO²</b> <img src="assets/ufo_blue.png" alt="UFO logo" width="40"> :&nbsp;The&nbsp;Desktop&nbsp;AgentOS
+  💡 大模型 GUI 智能体示例工程（基于 UFO 项目裁剪改造）
 </h1>
 <p align="center">
-  <em>Turn natural‑language requests into automatic, reliable, multi‑application workflows on Windows, beyond UI-Focused.</em>
+  <em>本仓库作为《大模型GUI智能体——人机交互新时代》书籍配套示例代码，演示如何构建可在 Windows 桌面上跨应用执行任务的多智能体体系。</em>
 </p>
 
+---
 
-<div align="center">
+## 0. 声明与来源
 
-[![arxiv](https://img.shields.io/badge/Paper-arXiv:2504.14603-b31b1b.svg)](https://arxiv.org/abs/2504.14603)&ensp;
-![Python Version](https://img.shields.io/badge/Python-3776AB?&logo=python&logoColor=white-blue&label=3.10%20%7C%203.11)&ensp;
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)&ensp;
-[![Documentation](https://img.shields.io/badge/Documentation-%230ABAB5?style=flat&logo=readthedocs&logoColor=black)](https://microsoft.github.io/UFO/)&ensp;
-[![YouTube](https://img.shields.io/badge/YouTube-white?logo=youtube&logoColor=%23FF0000)](https://www.youtube.com/watch?v=QT_OhygMVXU)&ensp;
-<!-- [![X (formerly Twitter) Follow](https://img.shields.io/twitter/follow/UFO_Agent)](https://twitter.com/intent/follow?screen_name=UFO_Agent) -->
-<!-- ![Welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)&ensp; -->
-<a href="https://trendshift.io/repositories/7874" target="_blank"><img src="https://trendshift.io/api/badge/repositories/7874" alt="microsoft%2FUFO | Trendshift" style="width: 250px; height: 55px;" width="250" height="55"/></a>
-</div>
+本示例工程在 MIT 许可下基于开源项目 UFO（原始仓库：https://github.com/microsoft/UFO/ ）进行删减与注释性改造，仅用于教学与阅读配套演示：
 
-<!-- **UFO** is a **UI-Focused** multi-agent framework to fulfill user requests on **Windows OS** by seamlessly navigating and operating within individual or spanning multiple applications. -->
+* 保留了与“GUI 智能体”核心概念相关的目录结构与关键代码骨架；
+* 移除了与书籍主题不直接相关的宣传、媒体报道、路线规划等内容；
+* 适度调整 README 叙述，使其聚焦 “大模型 + GUI 操作 + 跨应用工作流” 教学主线；
+* 不保证与原始上游仓库保持完全同步；如需生产级、最新、完整功能，请访问原仓库。
 
-<h1 align="center">
-    <img src="./assets/comparison.png" width="60%"/> 
-</h1>
+> 版权与许可：原项目依旧保留其 MIT 协议；本仓库沿用该协议。请在引用或二次分发时同时注明来自 UFO 项目及本书示例工程。
 
 ---
 
-## ✨ Key Capabilities
-<div align="center">
+## 1. 书籍定位与示例目标
 
-| [Deep OS Integration](https://microsoft.github.io/UFO)  | Picture‑in‑Picture Desktop *(coming soon)* | [Hybrid GUI + API Actions](https://microsoft.github.io/UFO/automator/overview) |
-|---------------------|-------------------------------------------|---------------------------|
-| Combines Windows UIA, Win32 and WinCOM for first‑class control detection and native commands. | Automation runs in a sandboxed virtual desktop so you can keep using your main screen. | Chooses native APIs when available, falls back to clicks/keystrokes when not—fast *and* robust. |
+围绕“人机交互新时代”这一主题，书中讨论了：
 
-| [Speculative Multi‑Action](https://microsoft.github.io/UFO/advanced_usage/multi_action) | [Continuous Knowledge Substrate](https://microsoft.github.io/UFO/advanced_usage/reinforce_appagent/overview/) | [UIA + Visual Control Detection](https://microsoft.github.io/UFO/advanced_usage/control_detection/hybrid_detection) |
-|--------------------------|--------------------------------|--------------------------------|
-| Bundles several predicted steps into one LLM call, validated live—up to **51 % fewer** queries. | Mixes docs, Bing search, user demos and execution traces via RAG for agents that learn over time. | Detects standard *and* custom controls with a hybrid UIA + vision pipeline. |
+1. 大模型在 GUI 环境下的感知、决策与执行闭环；
+2. 多 Agent（Host / App / 工具子代理）协作调度；
+3. 混合控制（API 优先 + GUI 回退）策略与稳定性；
+4. 检索增强（RAG）、经验记忆、演示学习等能力增益；
+5. 任务轨迹、反馈、再规划与自我改进机制。
 
-</div>
-
-*See the [documentation](https://microsoft.github.io/UFO/) for full details.*
+本仓库即作为一个“结构化参考骨架”，帮助读者将书中理论映射到真实代码组织形式。
 
 ---
 
-## 📢 News
-- 📅 2025-04-19: Version **v2.0.0** Released! We’re excited to announce the release the **UFO²**! UFO² is a major upgrade to the original UFO, featuring with enhanced capabilities. It introduces the **AgentOS** concept, enabling seamless integration of multiple agents for complex tasks. Please check our [new technical report](https://arxiv.org/pdf/2504.14603) for more details.
-- 📅 ...
-- 📅 2024-02-14: Our [technical report](https://arxiv.org/abs/2402.07939) for UFO is online!
-- 📅 2024-02-10: The first version of UFO is released on GitHub🎈. Happy Chinese New year🐉!
+## 2. 核心概念快速总览
+
+| 组件 | 角色定位 | 关键要点 |
+|------|----------|----------|
+| HostAgent | 全局任务编排者 | 解析用户自然语言意图；拆解与分派子任务；维护全局状态机 |
+| AppAgent | 针对特定应用的执行体 | 感知界面（UIAutomation/视觉截屏）；生成操作序列；执行与校验 |
+| Knowledge / Memory | 知识与经验底座 | 文档、在线检索、用户示范、历史轨迹向量化检索 |
+| Executor / Puppeteer | 执行器 | 按“优选原生 API，降级 GUI 操作”策略行动，兼顾效率与鲁棒性 |
+| Speculative / Multi‑Action（可选） | 交互加速 | 对未来多步操作进行预测 + 逐步验证，减少 LLM 调用轮次 |
+
+> 在本示例中，部分高级优化（如沙盒虚拟桌面、全量推测批执行等）可能被裁剪或仅保留接口占位，便于聚焦主干逻辑理解。
 
 ---
 
-## 🏗️ Architecture overview
-<p align="center">
-  <img src="assets/framework2.png"  width="80%" alt="UFO² architecture"/>
-</p>
+## 3. 目录结构（节选与教学导向说明）
 
+```
+dataflow/            # 数据 / 控制流建模示例（任务到执行链路的编排框架）
+learner/             # 经验/知识加工与索引（示例化）
+record_processor/    # 任务执行记录、演示数据解析与摘要
+ufo/                 # 核心多智能体框架（Host / App / LLM / 执行器等）
+vectordb/            # 检索相关底座（示例/占位）
+assets/              # 架构 / 流程图等可视化资源
+documents/           # 文档（可扩展为本地知识子集）
+```
 
-UFO² operates as a **Desktop AgentOS**, encompassing a multi-agent framework that includes:
-
-1. **HostAgent** – Parses the natural‑language goal, launches the necessary applications, spins up / coordinates AppAgents, and steers a global finite‑state machine (FSM).  
-2. **AppAgents** – One per application; each runs a ReAct loop with multimodal perception, hybrid control detection, retrieval‑augmented knowledge, and the **Puppeteer** executor that chooses between GUI actions and native APIs.  
-3. **Knowledge Substrate** – Blends offline documentation, online search, demonstrations, and execution traces into a vector store that is retrieved on‑the‑fly at inference.  
-4. **Speculative Executor** – Slashes LLM latency by predicting batches of likely actions and validating them against live UIA state in a single shot.  
-5. **Picture‑in‑Picture Desktop** *(coming soon)* – Runs the agent in an isolated virtual desktop so your main workspace and input devices remain untouched.
-
-For a deep dive see our [technical report](https://arxiv.org/pdf/2504.14603) or the [docs site](https://microsoft.github.io/UFO).
+阅读建议：先从 `ufo/` 下的 Host / App 相关代码入手，再回看 `dataflow/` 如何描述任务流，然后结合 `record_processor/` 了解轨迹与学习闭环。
 
 ---
 
-## 🌐 Media Coverage 
+## 4. 环境与快速运行
 
-UFO sightings have garnered attention from various media outlets, including:
-- [微软正式开源UFO²，Windows桌面迈入「AgentOS 时代」](https://www.jiqizhixin.com/articles/2025-05-06-13)
-- [Microsoft's UFO abducts traditional user interfaces for a smarter Windows experience](https://the-decoder.com/microsofts-ufo-abducts-traditional-user-interfaces-for-a-smarter-windows-experience/)
-- [🚀 UFO & GPT-4-V: Sit back and relax, mientras GPT lo hace todo🌌](https://www.linkedin.com/posts/gutierrezfrancois_ai-ufo-microsoft-activity-7176819900399652865-pLoo?utm_source=share&utm_medium=member_desktop)
-- [The AI PC - The Future of Computers? - Microsoft UFO](https://www.youtube.com/watch?v=1k4LcffCq3E)
-- [下一代Windows系统曝光：基于GPT-4V，Agent跨应用调度，代号UFO](https://baijiahao.baidu.com/s?id=1790938358152188625&wfr=spider&for=pc)
-- [下一代智能版 Windows 要来了？微软推出首个 Windows Agent，命名为 UFO！](https://blog.csdn.net/csdnnews/article/details/136161570)
-- [Microsoft発のオープンソース版「UFO」登場！　Windowsを自動操縦するAIエージェントを試す](https://internet.watch.impress.co.jp/docs/column/shimizu/1570581.html)
-- ...
+### 4.1 环境要求
+* 操作系统：Windows 10 或以上（需要桌面可视/可操作会话）
+* Python：≥ 3.10
+* 具备至少一个可调用的大模型（如 OpenAI / Azure OpenAI / 本地模型等）API Key
 
-These sources provide insights into the evolving landscape of technology and the implications of UFO phenomena on various platforms.
-
----
-
-## 🚀 Three‑minute Quickstart
-
-
-### 🛠️ Step 1: Installation
-UFO requires **Python >= 3.10** running on **Windows OS >= 10**. It can be installed by running the following command:
+### 4.2 安装步骤（示例）
 ```powershell
-# [optional to create conda environment]
-# conda create -n ufo python=3.10
-# conda activate ufo
+# （可选）创建隔离环境
+# conda create -n gui_agent_book python=3.10
+# conda activate gui_agent_book
 
-# clone the repository
-git clone https://github.com/microsoft/UFO.git
-cd UFO
-# install the requirements
+# 克隆本书示例仓库（不是原始 UFO 仓库）
+git clone <本仓库地址> gui-agent-book-sample
+cd gui-agent-book-sample
+
+# 安装依赖
 pip install -r requirements.txt
-# If you want to use the Qwen as your LLMs, uncomment the related libs.
 ```
 
-### ⚙️ Step 2: Configure the LLMs
-Before running UFO, you need to provide your LLM configurations **individually for HostAgent and AppAgent**. You can create your own config file `ufo/config/config.yaml`, by copying the `ufo/config/config.yaml.template` and editing config for **HOST_AGENT** and **APP_AGENT** as follows: 
-
+### 4.3 配置模型参数
+复制模板并填写：
 ```powershell
-copy ufo\config\config.yaml.template ufo\config\config.yaml
-notepad ufo\config\config.yaml   # paste your key & endpoint
+copy ufo\config\config.yaml.template ufo\config\config_dev.yaml
+notepad ufo\config\config_dev.yaml
 ```
-
-#### OpenAI
+示例（片段）：
 ```yaml
-VISUAL_MODE: True, # Whether to use the visual mode
-API_TYPE: "openai" , # The API type, "openai" for the OpenAI API.  
-API_BASE: "https://api.openai.com/v1/chat/completions", # The the OpenAI API endpoint.
-API_KEY: "sk-",  # The OpenAI API key, begin with sk-
-API_VERSION: "2024-02-15-preview", # "2024-02-15-preview" by default
-API_MODEL: "gpt-4o",  # The only OpenAI model
+HOST_AGENT:
+  API_TYPE: aoai
+  API_BASE: https://your-endpoint.openai.azure.com
+  API_KEY:  YOUR_KEY
+  API_MODEL: gpt-4o
+APP_AGENT:
+  API_TYPE: openai
+  API_MODEL: gpt-4o
+  VISUAL_MODE: true
 ```
 
-#### Azure OpenAI (AOAI)
-```yaml
-VISUAL_MODE: True, # Whether to use the visual mode
-API_TYPE: "aoai" , # The API type, "aoai" for the Azure OpenAI.  
-API_BASE: "YOUR_ENDPOINT", #  The AOAI API address. Format: https://{your-resource-name}.openai.azure.com
-API_KEY: "YOUR_KEY",  # The aoai API key
-API_VERSION: "2024-02-15-preview", # "2024-02-15-preview" by default
-API_MODEL: "gpt-4o",  # The only OpenAI model
-API_DEPLOYMENT_ID: "YOUR_AOAI_DEPLOYMENT", # The deployment id for the AOAI API
-```
-
-> Need Qwen, Gemini, non‑visual GPT‑4, or even **OpenAI CUA Operator** as a AppAgent? See the [model guide](https://microsoft.github.io/UFO/supported_models/overview/).
-
-### 📔 Step 3: Additional Setting for RAG (optional).
-If you want to enhance UFO's ability with external knowledge, you can optionally configure it with an external database for retrieval augmented generation (RAG) in the `ufo/config/config.yaml` file. 
-
-We provide the following options for RAG to enhance UFO's capabilities:
-- [Offline Help Document](https://microsoft.github.io/UFO/advanced_usage/reinforce_appagent/learning_from_help_document/) Enable UFO to retrieve information from offline help documents.
-- [Online Bing Search Engine](https://microsoft.github.io/UFO/advanced_usage/reinforce_appagent/learning_from_bing_search/): Enhance UFO's capabilities by utilizing the most up-to-date online search results.
-- [Self-Experience](https://microsoft.github.io/UFO/advanced_usage/reinforce_appagent/experience_learning/): Save task completion trajectories into UFO's memory for future reference.
-- [User-Demonstration](https://microsoft.github.io/UFO/advanced_usage/reinforce_appagent/learning_from_demonstration/): Boost UFO's capabilities through user demonstration.
-
-Consult their respective documentation for more information on how to configure these settings.
-
-
-### 🎉 Step 4: Start UFO
-
-#### ⌨️ You can execute the following on your Windows command Line (CLI):
-
+### 4.4 运行最小示例
 ```powershell
-# assume you are in the cloned UFO folder
-python -m ufo --task <your_task_name>
+python -m ufo --task simple_demo -r "在记事本中输入一句话并保存"
+```
+日志、截图、模型交互等输出可在：
+```
+ufo\logs\<task_name>\
 ```
 
-This will start the UFO process and you can interact with it through the command line interface. 
-If everything goes well, you will see the following message:
+> 提示：不同应用的自动化可需要额外权限（例如 UIAutomation 访问），首次运行请保证前台桌面与安全策略允许。
 
-```powershell
-Welcome to use UFO🛸, A UI-focused Agent for Windows OS Interaction. 
- _   _  _____   ___
-| | | ||  ___| / _ \
-| | | || |_   | | | |
-| |_| ||  _|  | |_| |
- \___/ |_|     \___/
-Please enter your request to be completed🛸:
-```
-
-Alternatively, you can also directly invoke UFO with a specific task and request by using the following command:
-
-```powershell
-python -m ufo --task <your_task_name> -r "<your_request>"
-```
-
-
-###  Step 5 🎥: Execution Logs 
-
-You can find the screenshots taken and request & response logs in the following folder:
-```
-./ufo/logs/<your_task_name>/
-```
-You may use them to debug, replay, or analyze the agent output.
-
-
-## ❓Get help 
-* Please first check our our documentation [here](https://microsoft.github.io/UFO/).
-* ❔GitHub Issues (prefered)
-* For other communications, please contact [ufo-agent@microsoft.com](mailto:ufo-agent@microsoft.com).
----
-
-
-## 📊 Evaluation
-
-UFO² is rigorously benchmarked on two publicly‑available live‑task suites:
-
-| Benchmark | Scope | Documents |
-|-----------|-------|-------|
-| [**Windows Agent Arena (WAA)**](https://github.com/nice-mee/WindowsAgentArena) | 154 real Windows tasks across 15 applications (Office, Edge, File Explorer, VS Code, …) | <https://microsoft.github.io/UFO/benchmark/windows_agent_arena/> |
-| [**OSWorld (Windows)**](https://github.com/nice-mee/WindowsAgentArena/tree/2020-qqtcg/osworld) | 49 cross‑application tasks that mix Office 365, browser and system utilities | <https://microsoft.github.io/UFO/benchmark/osworld> |
-
-The integration of these benchmarks into UFO² is in separate repositories. Please follow the above documents for more details.
+### 4.5 可选：启用外部知识 / 经验检索
+在 `ufo/config/` 中可开启：
+* 文档检索（离线帮助 / 本地说明）
+* 在线搜索（需配置对应 API）
+* 经验记忆（执行轨迹持久化与召回）
+* 用户演示（录制 -> 解析 -> 索引）
 
 ---
 
+## 5. 学习与实验路径建议
 
-## 📚 Citation
+1. 跑通最小任务 —— 熟悉调用路径与日志；
+2. 打开一个新应用（例如 计算器 / 记事本 / Office 组件）尝试自定义任务；
+3. 引入演示数据（`record_processor/`）构建“示例驱动”提示增强；
+4. 接入简单向量检索（`vectordb/`）并观察召回上下文对动作规划影响；
+5. 对比“仅 GUI 操作”与“API + GUI 混合”执行的稳定性与速度差异；
+6. 设计失败场景（控件定位变化、窗口遮挡、系统语言切换），评估健壮性策略。
 
-If you build on this work, please cite our the AgentOS framework:
+---
 
-**UFO² – The Desktop AgentOS (2025)**  
-<https://arxiv.org/abs/2504.14603>
+## 6. 与原始 UFO 功能差异（摘要）
+
+| 领域 | 原始 UFO | 本示例定位 |
+|------|----------|------------|
+| 功能完备度 | 包含最新特性（Speculative、多窗口沙盒等） | 以教学最小可理解路径为主，可能留空或简化 |
+| 生态/更新 | 持续演进 | 不保证同步，必要时请回源仓库 |
+| 适用场景 | 研究 + 工程试验 | 读者学习、课程/工作坊演示 |
+| 代码裁剪 | 尽量保留真实结构 | 去除与书籍主线无关的外部宣传、媒体、路线图 |
+
+---
+
+## 7. 安全与伦理提示
+
+* 自动化操作可能误触个人数据：请在隔离或测试账号环境中演示；
+* 谨慎输入包含隐私 / 受限商业信息的指令；
+* 任何用于生产或批量控制真实业务系统的扩展，需补充审计、权限、回滚、防滥用等机制；
+* 大模型输出存在不确定性，务必加入“结果校验”环节（规则过滤 / 二次确认 / 仿真执行）。
+
+---
+
+## 8. 引用与延伸阅读
+
+### 8.1 GUI 智能体综述（强烈推荐）
+LLM‑Brained GUI Agents: A Survey  
+https://arxiv.org/abs/2411.18279  
+GitHub: https://github.com/vyokky/LLM-Brained-GUI-Agents-Survey  
+交互式汇总站点: https://vyokky.github.io/LLM-Brained-GUI-Agents-Survey/
+
+> 该综述系统梳理了 GUI 智能体的感知、规划、执行、评测、对齐等核心研究脉络，可作为本书阅读的深化补充。
+
+### 8.2 原始 UFO / AgentOS 论文（背景参考）
+* UFO²: The Desktop AgentOS（2025）https://arxiv.org/abs/2504.14603
+* UFO: A UI-Focused Agent for Windows OS Interaction（2024）https://arxiv.org/abs/2402.07939
+
+若在学术论文或公开分享中引用本示例，请优先引用上述原始工作。
+
+### 8.3 BibTeX（可选）
 ```bibtex
 @article{zhang2025ufo2,
-  title   = {{UFO2: The Desktop AgentOS}},
+  title   = {UFO2: The Desktop AgentOS},
   author  = {Zhang, Chaoyun and Huang, He and Ni, Chiming and Mu, Jian and Qin, Si and He, Shilin and Wang, Lu and Yang, Fangkai and Zhao, Pu and Du, Chao and Li, Liqun and Kang, Yu and Jiang, Zhao and Zheng, Suzhen and Wang, Rujia and Qian, Jiaxu and Ma, Minghua and Lou, Jian-Guang and Lin, Qingwei and Rajmohan, Saravan and Zhang, Dongmei},
   journal = {arXiv preprint arXiv:2504.14603},
   year    = {2025}
 }
-```
 
-**UFO – A UI‑Focused Agent for Windows OS Interaction (2024)**  
-<https://arxiv.org/abs/2402.07939>
-```bibtex
 @article{zhang2024ufo,
-  title   = {{UFO: A UI-Focused Agent for Windows OS Interaction}},
+  title   = {UFO: A UI-Focused Agent for Windows OS Interaction},
   author  = {Zhang, Chaoyun and Li, Liqun and He, Shilin and Zhang, Xu and Qiao, Bo and Qin, Si and Ma, Minghua and Kang, Yu and Lin, Qingwei and Rajmohan, Saravan and Zhang, Dongmei and Zhang, Qi},
   journal = {arXiv preprint arXiv:2402.07939},
   year    = {2024}
 }
 ```
 
+---
 
+## 9. 许可（License）
+本示例继续沿用原项目的 MIT 协议：详见 `LICENSE`。在再分发、修改或引用时请：
+1. 标注源自微软开源项目 UFO；
+2. 说明本仓库为书籍教学裁剪版，非官方发行版；
+3. 不得造成对原项目来源、品牌或赞助关系的误导。
 
 ---
 
-## 📝 Roadmap
-
-The UFO² team is actively working on the following features and improvements:
-
-- [ ] **Picture‑in‑Picture Mode** – Completed and will be available in the next release  
-- [ ] **AgentOS‑as‑a‑Service** – Completed and will be available in the next release  
-- [ ] **Auto‑Debugging Toolkit** – Completed and will be available in the next release  
-- [ ] **Integration with MCP and Agent2Agent Communication** – Planned; under implementation  
-
+## 10. 限制与责任说明
+本仓库代码仅用于学习与研究：
+* 不提供任何生产级质量与 SLA 保证；
+* 触及第三方软件自动化时请遵守其使用条款；
+* 使用过程中产生的任何风险与后果由使用者自行承担。
 
 ---
 
-## 🎨 Related Projects
-- **TaskWeaver** — a code‑first LLM agent for data analytics: <https://github.com/microsoft/TaskWeaver>  
-- **LLM‑Brained GUI Agents: A Survey**: <https://arxiv.org/abs/2411.18279> • [GitHub](https://github.com/vyokky/LLM-Brained-GUI-Agents-Survey) • [Interactive site](https://vyokky.github.io/LLM-Brained-GUI-Agents-Survey/)
-
----
-
-
-## ⚠️ Disclaimer
-By choosing to run the provided code, you acknowledge and agree to the following terms and conditions regarding the functionality and data handling practices in [DISCLAIMER.md](./DISCLAIMER.md)
-
-This repository is intended solely for research purposes. The code provided herein is not designed, tested, or validated for third-party production use. Users are expected to exercise their own judgment and due diligence when utilizing any part of this codebase. Microsoft is committed to building Responsible and Trustworthy AI. To learn more about our principles and practices, please refer to our [principles and approach](https://www.microsoft.com/en-us/ai/principles-and-approach).
-
-
-
-## <img src="./assets/ufo_blue.png" alt="logo" width="30"> Trademarks
-
-This project may contain trademarks or logos for projects, products, or services. Authorized use of Microsoft 
-trademarks or logos is subject to and must follow 
-[Microsoft's Trademark & Brand Guidelines](https://www.microsoft.com/en-us/legal/intellectualproperty/trademarks/usage/general).
-Use of Microsoft trademarks or logos in modified versions of this project must not cause confusion or imply Microsoft sponsorship.
-Any use of third-party trademarks or logos are subject to those third-party's policies.
-
-
----
-
-## ⚖️ License
-This repository is released under the [MIT License](LICENSE) (SPDX‑Identifier: MIT).  
-See [DISCLAIMER.md](DISCLAIMER.md) for privacy & safety notices.
-
----
-
-<p align="center"><sub>© Microsoft 2025 • UFO² is an open‑source project, not an official Windows feature.</sub></p>
+<p align="center"><sub>本示例仅用于《大模型GUI智能体——人机交互新时代》教学演示；原始工程与最新能力请访问 Microsoft UFO 上游仓库。</sub></p>
 
