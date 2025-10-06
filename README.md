@@ -8,7 +8,7 @@
 
 ---
 
-## 0. 声明与来源
+## 0. 📌 声明与来源
 
 本示例工程在 MIT 许可下基于开源项目 UFO（原始仓库：https://github.com/microsoft/UFO/ ）进行删减与注释性改造，仅用于教学与阅读配套演示：
 
@@ -21,7 +21,7 @@
 
 ---
 
-## 1. 书籍定位与示例目标
+## 1. 🎯 书籍定位与示例目标
 
 围绕“人机交互新时代”这一主题，书中讨论了：
 
@@ -35,7 +35,7 @@
 
 ---
 
-## 2. 核心概念快速总览
+## 2. 🧠 核心概念快速总览
 
 | 组件 | 角色定位 | 关键要点 |
 |------|----------|----------|
@@ -49,7 +49,7 @@
 
 ---
 
-## 3. 目录结构（节选与教学导向说明）
+## 3. 📁 目录结构（节选与教学导向说明）
 
 ```
 dataflow/            # 数据 / 控制流建模示例（任务到执行链路的编排框架）
@@ -65,14 +65,14 @@ documents/           # 文档（可扩展为本地知识子集）
 
 ---
 
-## 4. 环境与快速运行
+## 4. 🚀 环境与快速运行
 
-### 4.1 环境要求
+### 4.1 ⚙️ 环境要求
 * 操作系统：Windows 10 或以上（需要桌面可视/可操作会话）
 * Python：≥ 3.10
 * 具备至少一个可调用的大模型（如 OpenAI / Azure OpenAI / 本地模型等）API Key
 
-### 4.2 安装步骤（示例）
+### 4.2 ⬇️ 安装步骤（示例）
 ```powershell
 # （可选）创建隔离环境
 # conda create -n gui_agent_book python=3.10
@@ -86,7 +86,7 @@ cd gui-agent-book-sample
 pip install -r requirements.txt
 ```
 
-### 4.3 配置模型参数
+### 4.3 🔧 配置模型参数
 复制模板并填写：
 ```powershell
 copy ufo\config\config.yaml.template ufo\config\config_dev.yaml
@@ -105,7 +105,7 @@ APP_AGENT:
   VISUAL_MODE: true
 ```
 
-### 4.4 运行最小示例
+### 4.4 ▶️ 运行最小示例
 ```powershell
 python -m ufo --task simple_demo -r "在记事本中输入一句话并保存"
 ```
@@ -116,7 +116,7 @@ ufo\logs\<task_name>\
 
 > 提示：不同应用的自动化可需要额外权限（例如 UIAutomation 访问），首次运行请保证前台桌面与安全策略允许。
 
-### 4.5 可选：启用外部知识 / 经验检索
+### 4.5 🧩 可选：启用外部知识 / 经验检索
 在 `ufo/config/` 中可开启：
 * 文档检索（离线帮助 / 本地说明）
 * 在线搜索（需配置对应 API）
@@ -125,7 +125,7 @@ ufo\logs\<task_name>\
 
 ---
 
-## 5. 学习与实验路径建议
+## 5. 🧪 学习与实验路径建议
 
 1. 跑通最小任务 —— 熟悉调用路径与日志；
 2. 打开一个新应用（例如 计算器 / 记事本 / Office 组件）尝试自定义任务；
@@ -136,7 +136,7 @@ ufo\logs\<task_name>\
 
 ---
 
-## 6. 与原始 UFO 功能差异（摘要）
+## 6. 🔍 与原始 UFO 功能差异（摘要）
 
 | 领域 | 原始 UFO | 本示例定位 |
 |------|----------|------------|
@@ -147,7 +147,7 @@ ufo\logs\<task_name>\
 
 ---
 
-## 7. 安全与伦理提示
+## 7. ⚠️ 安全与伦理提示
 
 * 自动化操作可能误触个人数据：请在隔离或测试账号环境中演示；
 * 谨慎输入包含隐私 / 受限商业信息的指令；
@@ -156,9 +156,9 @@ ufo\logs\<task_name>\
 
 ---
 
-## 8. 引用与延伸阅读
+## 8. 📚 引用与延伸阅读
 
-### 8.1 GUI 智能体综述（强烈推荐）
+### 8.1 🧭 GUI 智能体综述（强烈推荐）
 LLM‑Brained GUI Agents: A Survey  
 https://arxiv.org/abs/2411.18279  
 GitHub: https://github.com/vyokky/LLM-Brained-GUI-Agents-Survey  
@@ -166,13 +166,13 @@ GitHub: https://github.com/vyokky/LLM-Brained-GUI-Agents-Survey
 
 > 该综述系统梳理了 GUI 智能体的感知、规划、执行、评测、对齐等核心研究脉络，可作为本书阅读的深化补充。
 
-### 8.2 原始 UFO / AgentOS 论文（背景参考）
+### 8.2 🏛️ 原始 UFO / AgentOS 论文（背景参考）
 * UFO²: The Desktop AgentOS（2025）https://arxiv.org/abs/2504.14603
 * UFO: A UI-Focused Agent for Windows OS Interaction（2024）https://arxiv.org/abs/2402.07939
 
 若在学术论文或公开分享中引用本示例，请优先引用上述原始工作。
 
-### 8.3 BibTeX（可选）
+### 8.3 🗂️ BibTeX（可选）
 ```bibtex
 @article{zhang2025ufo2,
   title   = {UFO2: The Desktop AgentOS},
@@ -191,7 +191,7 @@ GitHub: https://github.com/vyokky/LLM-Brained-GUI-Agents-Survey
 
 ---
 
-## 9. 许可（License）
+## 9. 📄 许可（License）
 本示例继续沿用原项目的 MIT 协议：详见 `LICENSE`。在再分发、修改或引用时请：
 1. 标注源自微软开源项目 UFO；
 2. 说明本仓库为书籍教学裁剪版，非官方发行版；
@@ -199,7 +199,7 @@ GitHub: https://github.com/vyokky/LLM-Brained-GUI-Agents-Survey
 
 ---
 
-## 10. 限制与责任说明
+## 10. 🛡️ 限制与责任说明
 本仓库代码仅用于学习与研究：
 * 不提供任何生产级质量与 SLA 保证；
 * 触及第三方软件自动化时请遵守其使用条款；
